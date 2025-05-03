@@ -1,8 +1,6 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 # Run lint-staged for formatting and linting
 echo "🔍 Running linters and formatters..."
+pnpm test
 pnpm exec lint-staged
 
 # Store the lint-staged exit status
@@ -18,7 +16,9 @@ CHANGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(j
 
 if [ -n "$CHANGED_FILES" ]; then
   # Only run tests if there are JavaScript/TypeScript files changed
-  pnpm test -- --bail --findRelatedTests $CHANGED_FILES
+  # Convert the file list to proper arguments for Jest
+  # We use xargs to convert the newline-separated list to space-separated arguments
+  echo "$CHANGED_FILES" | xargs pnpm test -- --bail --findRelatedTests
   
   # Store the test exit status
   TEST_STATUS=$?
