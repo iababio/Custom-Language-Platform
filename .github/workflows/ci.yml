@@ -1,0 +1,53 @@
+name: Language Platform CI/CD Pipeline
+
+on:
+   push:
+      branches: [main, master]
+   pull_request:
+      branches: [main, master]
+
+jobs:
+   build-and-test:
+      runs-on: ubuntu-latest
+
+      strategy:
+         matrix:
+            node-version: [18.x]
+
+      steps:
+         - name: Checkout repository
+           uses: actions/checkout@v4
+
+         - name: Setup pnpm
+           uses: pnpm/action-setup@v4
+           with:
+              version: 8
+              run_install: false
+
+         - name: Setup Node.js
+           uses: actions/setup-node@v4
+           with:
+              node-version: ${{ matrix.node-version }}
+              cache: 'pnpm'
+
+         - name: Install dependencies
+           run: pnpm install
+
+         - name: Check code formatting
+           run: npx prettier --check .
+
+         - name: Lint
+           run: pnpm run lint
+
+         - name: Run tests
+           run: pnpm test
+
+         - name: Build
+           run: pnpm build
+
+         - name: Upload build artifacts
+           uses: actions/upload-artifact@v4
+           with:
+              name: build-output
+              path: .next/
+              retention-days: 7
