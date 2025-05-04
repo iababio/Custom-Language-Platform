@@ -1,42 +1,50 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
 
-# Set shell options for better error handling
-set -e
+# Terminal colors
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
 
-echo "🔍 Running linters and formatters..."
+# Standard pre-commit stages
+echo "${YELLOW}🔍 Running pre-commit checks...${NC}"
+
+# Stage 1: Format and lint code (fast checks)
+echo "${YELLOW}Stage 1/2: Running linters and formatters...${NC}"
 pnpm exec lint-staged
 
 # Store the lint-staged exit status
 LINT_STATUS=$?
 if [ $LINT_STATUS -ne 0 ]; then
-  echo "❌ Linting failed! Please fix the issues before committing."
+  echo "${RED}❌ Linting failed! Please fix the issues before committing.${NC}"
   exit 1
+else
+  echo "${GREEN}✓ Linting passed${NC}"
 fi
 
-# Run Jest tests for changed files
-echo "🧪 Running tests for changed files..."
+# Stage 2: Run Jest tests only on changed files
+echo "${YELLOW}Stage 2/2: Running tests for changed files...${NC}"
 CHANGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(js|jsx|ts|tsx)$' || true)
 
 if [ -n "$CHANGED_FILES" ]; then
   # Only run tests if there are JavaScript/TypeScript files changed
-  # Use temporary file to avoid issues with command line length limits
-  TEMP_FILE=$(mktemp)
-  echo "$CHANGED_FILES" > "$TEMP_FILE"
+  # Use --findRelatedTests to only run tests affected by changed files
+  # Add --passWithNoTests to prevent failure when no tests match
+  echo "$CHANGED_FILES" | xargs pnpm test --passWithNoTests --findRelatedTests
   
-  # Use findRelatedTests with the file containing the list of changed files
-  pnpm test -- --bail --findRelatedTests $(cat "$TEMP_FILE")
+  # Store the test exit status
   TEST_STATUS=$?
   
-  # Clean up temporary file
-  rm "$TEMP_FILE"
-  
   if [ $TEST_STATUS -ne 0 ]; then
-    echo "❌ Tests failed! Please fix the failing tests before committing."
+    echo "${RED}❌ Tests failed! Please fix the failing tests before committing.${NC}"
     exit 1
+  else
+    echo "${GREEN}✓ Tests passed${NC}"
   fi
 else
-  echo "ℹ️ No relevant files changed. Skipping tests."
+  echo "${GREEN}✓ No JavaScript/TypeScript files changed, skipping tests${NC}"
 fi
 
-echo "✅ All checks passed!"
+# All checks passed
+echo "${GREEN}✅ All pre-commit checks passed! Proceeding with commit.${NC}"

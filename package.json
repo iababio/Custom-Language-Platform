@@ -12,19 +12,27 @@
       "prepare": "husky"
    },
    "dependencies": {
+      "@azure/openai": "^2.0.0",
       "@clerk/nextjs": "^6.18.5",
+      "@microsoft/applicationinsights-react-js": "^19.3.6",
+      "@microsoft/applicationinsights-web": "^3.3.6",
       "@radix-ui/react-slot": "^1.2.0",
+      "applicationinsights": "^3.7.0",
       "class-variance-authority": "^0.7.1",
       "clsx": "^2.1.1",
       "framer-motion": "^12.9.4",
+      "history": "^5.3.0",
       "lucide-react": "^0.506.0",
       "next": "15.3.1",
       "next-intl": "^4.1.0",
+      "openai": "^4.97.0",
       "postcss": "^8.5.3",
       "react": "^19.0.0",
       "react-dom": "^19.0.0",
       "react-icons": "^5.5.0",
-      "tailwind-merge": "^3.2.0"
+      "react-markdown": "^10.1.0",
+      "tailwind-merge": "^3.2.0",
+      "uuid": "^11.1.0"
    },
    "devDependencies": {
       "@eslint/eslintrc": "^3",
