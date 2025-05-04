@@ -121,7 +121,7 @@ export async function POST(request: Request) {
                               ),
                            );
                            controller.enqueue(encoder.encode('data: [DONE]\n\n'));
-                        } catch (e) {
+                        } catch {
                            // Silent catch - we're already in error state
                         }
 
