@@ -3,6 +3,7 @@ import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata } from 'next';
 import { Inter, Epilogue } from 'next/font/google';
+// import { reactPlugin } from '@/lib/appInsights';
 
 const inter = Inter({
    variable: '--font-inter',
@@ -31,18 +32,19 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
    return (
       <html lang="en" className={`${inter.variable} ${epilogue.variable}`}>
-         <head />
+         {/* <AppInsightsContext.Provider value={reactPlugin}> */}
          <body className="min-h-screen bg-background font-sans antialiased">
             <ClerkProvider
                publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
                signInUrl="/sign-in"
                signUpUrl="/sign-up"
-               afterSignInUrl="/chat"
-               afterSignUpUrl="/chat"
+               afterSignInUrl="/dashboard"
+               afterSignUpUrl="/dashboard"
             >
                {children}
             </ClerkProvider>
          </body>
+         {/* </AppInsightsContext.Provider> */}
       </html>
    );
 }

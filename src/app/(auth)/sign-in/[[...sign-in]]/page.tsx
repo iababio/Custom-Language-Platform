@@ -12,7 +12,7 @@ export default function SignInPage() {
 
    useEffect(() => {
       if (isLoaded && isSignedIn) {
-         router.push('/chat');
+         router.push('/dashboard');
       }
    }, [isLoaded, isSignedIn, router]);
 
@@ -129,7 +129,7 @@ export default function SignInPage() {
                         footerActionLink: 'text-blue-600 hover:text-blue-800',
                      },
                   }}
-                  redirectUrl="/chat"
+                  redirectUrl="/dashboard"
                />
             </div>
          </div>
