@@ -1,11 +1,12 @@
 import React from 'react';
-import { Share2 } from 'lucide-react';
+import { Share2, Bell } from 'lucide-react';
 
 interface HeaderProps {
    breadcrumbs: string[];
+   notifications?: number;
 }
 
-export const Header = ({ breadcrumbs = [] }: HeaderProps) => {
+export const Header = ({ breadcrumbs = [], notifications = 0 }: HeaderProps) => {
    const title = breadcrumbs.length > 0 ? breadcrumbs[0] : '';
 
    return (
@@ -32,11 +33,16 @@ export const Header = ({ breadcrumbs = [] }: HeaderProps) => {
             </div>
 
             <div className="flex items-center">
-               <button className="w-8 h-8 flex items-center justify-center text-gray-500 rounded-full hover:bg-gray-100 mr-2">
-                  <span className="text-sm bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center">
-                     2
-                  </span>
-               </button>
+               {notifications > 0 && (
+                  <button className="w-8 h-8 flex items-center justify-center text-gray-500 rounded-full hover:bg-gray-100 mr-2">
+                     <span className="relative">
+                        <Bell size={18} />
+                        <span className="absolute -top-1 -right-1 text-xs bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center">
+                           {notifications}
+                        </span>
+                     </span>
+                  </button>
+               )}
                <button className="flex items-center px-3 py-1.5 bg-white border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50">
                   <Share2 size={16} className="mr-1" />
                   <span>Share</span>

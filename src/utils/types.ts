@@ -2,12 +2,13 @@
 
 export interface Task {
    id: string;
-   title: string;
+   english: string;
+   lrl?: string;
+   xcl?: string; // Added this field for IC-XCL data
    isChecked: boolean;
-   description?: string;
    assignees: string[];
-   dueDate: string;
-   priority: 'Low' | 'Normal' | 'Urgent';
+   dueDate?: string;
+   priority: 'Urgent' | 'Normal' | 'Low';
    progress: number;
    subtasks?: number;
    completedSubtasks?: number;
@@ -16,6 +17,6 @@ export interface Task {
 export interface TaskGroup {
    id: string;
    title: string;
-   tasks: Task[];
    color: string;
+   tasks: Task[];
 }

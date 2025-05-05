@@ -97,7 +97,7 @@ export default function SignInPage() {
 
             <div className="relative left-0 w-full flex justify-center">
                <Link
-                  href="https://github.com/iababio/llm_evaluator"
+                  href="https://github.com/iababio/Custom-Language-Platform"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-white/80 hover:text-white transition-colors text-sm my-20"

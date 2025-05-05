@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-   Home,
    CheckSquare,
    Clock,
    List,
@@ -11,17 +10,53 @@ import {
    Edit,
    ChevronRight,
    ChevronLeft,
+   GraduationCap,
+   Logs,
+   FlaskConical,
 } from 'lucide-react';
 import { UserButton, useUser } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
 
-export const Sidebar = () => {
+interface SidebarProps {
+   onNavigate: (page: string) => void; // Add this prop for navigation
+   activePage: string; // Add this to track the active page
+}
+
+export const Sidebar = ({ onNavigate, activePage }: SidebarProps) => {
    const { user } = useUser();
    const [isCollapsed, setIsCollapsed] = useState(false);
 
    const toggleCollapse = () => {
       setIsCollapsed(!isCollapsed);
    };
+
+   // Helper to create navigation item with active state
+   const NavItem = ({
+      id,
+      title,
+      icon,
+      onClick,
+   }: {
+      id: string;
+      title: string;
+      icon: React.ReactNode;
+      onClick: () => void;
+   }) => (
+      <li className="mb-0">
+         <button
+            onClick={onClick}
+            className={`flex items-center w-full text-left px-4 py-1 rounded ${
+               activePage === id ? 'bg-white text-blue-600' : 'text-gray-700 hover:bg-white'
+            }`}
+            title={title}
+         >
+            <span className={`mr-3 ${activePage === id ? 'text-blue-600' : 'text-gray-500'}`}>
+               {icon}
+            </span>
+            {!isCollapsed && <span>{title}</span>}
+         </button>
+      </li>
+   );
 
    return (
       <div
@@ -45,10 +80,17 @@ export const Sidebar = () => {
 
          {/* Logo/App header */}
          <div className="px-4 py-3 border-gray-200 flex items-center">
-            <div className="w-8 h-8 bg-black rounded flex items-center justify-center text-white mr-2">
+            <div
+               className="w-8 h-8 bg-black rounded flex items-center justify-center text-white mr-2 cursor-pointer"
+               onClick={() => onNavigate('dashboard')}
+            >
                A
             </div>
-            {!isCollapsed && <h1 className="font-semibold">Language Platform</h1>}
+            {!isCollapsed && (
+               <h1 className="font-semibold cursor-pointer" onClick={() => onNavigate('dashboard')}>
+                  Language Platform
+               </h1>
+            )}
          </div>
 
          {/* Workspace section */}
@@ -58,7 +100,7 @@ export const Sidebar = () => {
                   <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center text-white mr-2">
                      K
                   </div>
-                  {!isCollapsed && <span>Training Datasets</span>}
+                  {!isCollapsed && <span>Training Models</span>}
                </div>
                {!isCollapsed && (
                   <button className="text-gray-400">
@@ -71,32 +113,36 @@ export const Sidebar = () => {
          {/* Main navigation */}
          <div className="flex-1 overflow-y-auto">
             <ul className="p-2">
-               <li className="mb-0">
-                  <a
-                     href="/chat"
-                     className="flex items-center px-4 py-1 text-gray-700 rounded hover:bg-white"
-                     title="QA Tests"
-                  >
-                     <Home size={12} className="mr-3 text-gray-500" />
-                     {!isCollapsed && <span>QA Tests</span>}
-                  </a>
-               </li>
-               <li className="mb-0">
-                  <a
-                     href="#"
-                     className="flex items-center px-4 py-1 text-gray-700 rounded hover:bg-white"
-                     title="ToDo"
-                  >
-                     <CheckSquare size={12} className="mr-3 text-gray-500" />
-                     {!isCollapsed && <span>ToDo</span>}
-                  </a>
-               </li>
+               <NavItem
+                  id="training"
+                  title="Training"
+                  icon={<GraduationCap size={12} />}
+                  onClick={() => onNavigate('training')}
+               />
+               <NavItem
+                  id="logs"
+                  title="Logs"
+                  icon={<Logs size={12} />}
+                  onClick={() => onNavigate('logs')}
+               />
+               <NavItem
+                  id="evaluate"
+                  title="Evaluate | Chat"
+                  icon={<FlaskConical size={12} />}
+                  onClick={() => onNavigate('evaluate')}
+               />
+               <NavItem
+                  id="todo"
+                  title="ToDo"
+                  icon={<CheckSquare size={12} />}
+                  onClick={() => onNavigate('todo')}
+               />
             </ul>
 
             {/* Datasets section */}
             <div className="p-4 border-t border-gray-200">
                <div className="flex items-center justify-between mb-2">
-                  {!isCollapsed && <h3 className="font-medium text-sm">Datasets</h3>}
+                  {!isCollapsed && <h3 className="font-medium text-sm"> Datasets</h3>}
                   {!isCollapsed ? (
                      <div className="flex">
                         <button className="text-gray-400 mr-1">
@@ -115,40 +161,68 @@ export const Sidebar = () => {
                {!isCollapsed && (
                   <ul>
                      <li className="mb-1">
-                        <a
-                           href="#"
-                           className="flex items-center px-2 py-1 text-sm text-gray-700 rounded hover:bg-white"
+                        <button
+                           onClick={() => onNavigate('favorites')}
+                           className={`flex items-center w-full text-left px-2 py-1 text-sm rounded ${
+                              activePage === 'favorites'
+                                 ? 'bg-white text-blue-600'
+                                 : 'text-gray-700 hover:bg-white'
+                           }`}
                         >
-                           <Star size={12} className="mr-2 text-gray-400" />
+                           <Star
+                              size={12}
+                              className={`mr-2 ${activePage === 'favorites' ? 'text-blue-600' : 'text-gray-400'}`}
+                           />
                            <span>Favorites</span>
-                        </a>
+                        </button>
                      </li>
                      <li className="mb-1">
-                        <a
-                           href="#"
-                           className="flex items-center px-2 py-1 text-sm text-gray-700 rounded hover:bg-white"
+                        <button
+                           onClick={() => onNavigate('uploads')}
+                           className={`flex items-center w-full text-left px-2 py-1 text-sm rounded ${
+                              activePage === 'uploads'
+                                 ? 'bg-white text-blue-600'
+                                 : 'text-gray-700 hover:bg-white'
+                           }`}
                         >
-                           <File size={12} className="mr-2 text-gray-400" />
+                           <File
+                              size={12}
+                              className={`mr-2 ${activePage === 'uploads' ? 'text-blue-600' : 'text-gray-400'}`}
+                           />
                            <span>Uploads</span>
-                        </a>
+                        </button>
                      </li>
                      <li className="mb-1">
-                        <a
-                           href="#"
-                           className="flex items-center px-2 py-1 text-sm text-gray-700 rounded hover:bg-white"
+                        <button
+                           onClick={() => onNavigate('labeling')}
+                           className={`flex items-center w-full text-left px-2 py-1 text-sm rounded ${
+                              activePage === 'labeling'
+                                 ? 'bg-white text-blue-600'
+                                 : 'text-gray-700 hover:bg-white'
+                           }`}
                         >
-                           <Edit size={12} className="mr-2 text-gray-400" />
+                           <Edit
+                              size={12}
+                              className={`mr-2 ${activePage === 'labeling' ? 'text-blue-600' : 'text-gray-400'}`}
+                           />
                            <span>Labeling</span>
-                        </a>
+                        </button>
                      </li>
                      <li className="mb-0">
-                        <a
-                           href="#"
-                           className="flex items-center px-2 py-1 text-gray-700 rounded hover:bg-white"
+                        <button
+                           onClick={() => onNavigate('created')}
+                           className={`flex items-center w-full text-left px-2 py-1 text-sm rounded ${
+                              activePage === 'created'
+                                 ? 'bg-white text-blue-600'
+                                 : 'text-gray-700 hover:bg-white'
+                           }`}
                         >
-                           <Clock size={12} className="mr-2 text-gray-500" />
+                           <Clock
+                              size={12}
+                              className={`mr-2 ${activePage === 'created' ? 'text-blue-600' : 'text-gray-500'}`}
+                           />
                            <span>Created by me</span>
-                        </a>
+                        </button>
                      </li>
                   </ul>
                )}
@@ -170,36 +244,41 @@ export const Sidebar = () => {
                   </div>
                   <ul>
                      <li className="mb-1">
-                        <a
-                           href="#"
-                           className="flex items-center py-1 text-sm text-gray-700 rounded hover:bg-white"
+                        <button
+                           onClick={() => onNavigate('project-1')}
+                           className={`flex items-center w-full text-left py-1 text-sm rounded ${
+                              activePage === 'project-1'
+                                 ? 'bg-white text-blue-600'
+                                 : 'text-gray-700 hover:bg-white'
+                           }`}
                         >
-                           <span className="ml-2">Adrian Bert - CRM Dashboard</span>
-                        </a>
+                           <span className="ml-2">Twi Project 1</span>
+                        </button>
                      </li>
                      <li className="mb-1">
-                        <a
-                           href="#"
-                           className="flex items-center py-1 text-sm text-gray-700 rounded hover:bg-white"
+                        <button
+                           onClick={() => onNavigate('project-2')}
+                           className={`flex items-center w-full text-left py-1 text-sm rounded ${
+                              activePage === 'project-2'
+                                 ? 'bg-white text-blue-600'
+                                 : 'text-gray-700 hover:bg-white'
+                           }`}
                         >
-                           <span className="ml-2">Trust - SaaS Dashboard</span>
-                        </a>
+                           <span className="ml-2">Spanish</span>
+                        </button>
                      </li>
+
                      <li className="mb-1">
-                        <a
-                           href="#"
-                           className="flex items-center py-1 text-sm text-gray-700 rounded hover:bg-white"
+                        <button
+                           onClick={() => onNavigate('project-4')}
+                           className={`flex items-center w-full text-left px-1 py-1 text-sm rounded ${
+                              activePage === 'project-4'
+                                 ? 'bg-white text-blue-600'
+                                 : 'text-gray-700 hover:bg-white'
+                           }`}
                         >
-                           <span className="ml-2">Pertamina Project</span>
-                        </a>
-                     </li>
-                     <li className="mb-1">
-                        <a
-                           href="#"
-                           className="flex items-center px-1 py-1 text-sm text-gray-700 rounded hover:bg-white"
-                        >
-                           <span className="ml-2">Garuda Project</span>
-                        </a>
+                           <span className="ml-2">Swahili</span>
+                        </button>
                      </li>
                   </ul>
                </div>
@@ -210,30 +289,49 @@ export const Sidebar = () => {
          <div className="p-4 border-t border-gray-200">
             <ul>
                <li className="mb-1">
-                  <a
-                     href="#"
+                  <button
+                     onClick={() => onNavigate('settings')}
                      className={cn(
-                        'flex items-center text-gray-700 rounded hover:bg-white',
+                        'flex items-center w-full text-left rounded',
+                        activePage === 'settings'
+                           ? 'bg-white text-blue-600'
+                           : 'text-gray-700 hover:bg-white',
                         isCollapsed ? 'justify-center px-2' : 'px-4',
                      )}
                      title="Settings"
                   >
-                     <Settings size={12} className={isCollapsed ? '' : 'mr-3'} />
+                     <Settings
+                        size={12}
+                        className={cn(
+                           isCollapsed ? '' : 'mr-3',
+                           activePage === 'settings' ? 'text-blue-600' : '',
+                        )}
+                     />
                      {!isCollapsed && <span>Settings</span>}
-                  </a>
+                  </button>
                </li>
                <li>
-                  <a
-                     href="#"
+                  <button
+                     onClick={() => onNavigate('help')}
                      className={cn(
-                        'flex items-center text-gray-700 rounded hover:bg-white',
+                        'flex items-center w-full text-left rounded',
+                        activePage === 'help'
+                           ? 'bg-white text-blue-600'
+                           : 'text-gray-700 hover:bg-white',
                         isCollapsed ? 'justify-center px-2' : 'px-4',
                      )}
                      title="Help Center"
                   >
-                     <span className={cn('text-gray-500', isCollapsed ? '' : 'mr-3')}>?</span>
+                     <span
+                        className={cn(
+                           activePage === 'help' ? 'text-blue-600' : 'text-gray-500',
+                           isCollapsed ? '' : 'mr-3',
+                        )}
+                     >
+                        ?
+                     </span>
                      {!isCollapsed && <span>Help Center</span>}
-                  </a>
+                  </button>
                </li>
             </ul>
          </div>
