@@ -31,7 +31,7 @@ if [ -n "$CHANGED_FILES" ]; then
   # Only run tests if there are JavaScript/TypeScript files changed
   # Use --findRelatedTests to only run tests affected by changed files
   # Add --passWithNoTests to prevent failure when no tests match
-  echo "$CHANGED_FILES" | xargs pnpm test --passWithNoTests --findRelatedTests
+  echo "$CHANGED_FILES" | xargs pnpm test
   
   # Store the test exit status
   TEST_STATUS=$?
