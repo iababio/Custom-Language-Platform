@@ -1,9 +1,9 @@
 import React from 'react';
 import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
+import { DashboardProvider } from '../contexts/DashboardContext';
 import type { Metadata } from 'next';
 import { Inter, Epilogue } from 'next/font/google';
-// import { reactPlugin } from '@/lib/appInsights';
 
 const inter = Inter({
    variable: '--font-inter',
@@ -20,19 +20,13 @@ const epilogue = Epilogue({
 });
 
 export const metadata: Metadata = {
-   title: 'Language Platform',
-   icons: {
-      icon: '/favicon.ico',
-      shortcut: '/favicon.ico',
-      apple: '/apple-touch-icon.png',
-   },
-   description: 'Train a custom language model',
+   title: 'Language Pipeline',
+   description: 'Language model training and management platform',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
    return (
       <html lang="en" className={`${inter.variable} ${epilogue.variable}`}>
-         {/* <AppInsightsContext.Provider value={reactPlugin}> */}
          <body className="min-h-screen bg-background font-sans antialiased">
             <ClerkProvider
                publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
@@ -41,10 +35,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                afterSignInUrl="/dashboard"
                afterSignUpUrl="/dashboard"
             >
-               {children}
+               <DashboardProvider>{children}</DashboardProvider>
             </ClerkProvider>
          </body>
-         {/* </AppInsightsContext.Provider> */}
       </html>
    );
 }

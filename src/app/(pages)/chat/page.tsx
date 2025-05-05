@@ -419,12 +419,17 @@ const ChatPage = () => {
             </div>
 
             <div className="p-4 border-t border-gray-200">
-               <div className="flex items-center">
-                  <div className="w-8 h-8 bg-gray-300 rounded-full mr-2 flex items-center justify-center">
-                     {user?.firstName?.charAt(0) || user?.username?.charAt(0) || 'U'}
-                  </div>
-                  <div className="text-sm">{user?.firstName || user?.username || 'User'}</div>
-               </div>
+               <a href="/dashboard" rel="noopener noreferrer">
+                  <h3 className="text-sm font-semibold text-gray-700 mb-2">
+                     {`Train Your own language Model >`}
+                  </h3>
+                  {/* <div className="flex items-center">
+                     <div className="w-8 h-8 bg-gray-300 rounded-full mr-2 flex items-center justify-center">
+                        {user?.firstName?.charAt(0) || user?.username?.charAt(0) || 'U'}
+                     </div>
+                     <div className="text-sm">{user?.firstName || user?.username || 'User'}</div>
+                  </div> */}
+               </a>
             </div>
          </div>
 
